@@ -11,9 +11,12 @@ All notable changes to python-utils-toolkit are documented here.
 
 ---
 
-## [1.1.0] — 2026-05-11
+## [1.1.0] — 2026-05-21
 
 ### Added
+- Issue templates for bug reports and feature requests
+- `CONTRIBUTING.md` guidelines
+- Badges and contribution links in README
 - Tests for `rate_limiter` — covers `AsyncRateLimiter` and `RateLimiter` edge cases
 - Tests for `number_utils` — formatting, tick rounding, pct_change
 - Tests for `string_utils` — slugify, truncate, camel_to_snake
