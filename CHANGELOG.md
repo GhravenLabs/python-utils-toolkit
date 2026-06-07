@@ -4,6 +4,9 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+### Fixed
+- Package root imports now match the actual utility module API and keep compatibility aliases such as `safe_read`, `safe_write`, and `hmac_sign`.
+
 ### Planned
 - `http_utils` — thin wrapper around urllib for GET/POST with retries
 - `cli_utils` — argument parsing helpers for script CLIs
