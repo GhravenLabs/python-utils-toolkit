@@ -3,10 +3,10 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat-square&logo=python)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Pure Python](https://img.shields.io/badge/dependencies-zero-brightgreen?style=flat-square)](requirements.txt)
-[![Tests](https://img.shields.io/badge/tests-15%20modules-blue?style=flat-square)](tests/)
+[![CI](https://github.com/GhravenLabs/python-utils-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/GhravenLabs/python-utils-toolkit/actions/workflows/ci.yml)
 [![Changelog](https://img.shields.io/badge/changelog-view-orange?style=flat-square)](CHANGELOG.md)
 
-A collection of practical, production-ready Python utilities built while working on crypto trading bots and AI agent systems. **Pure Python — zero external dependencies.**
+A collection of practical, production-ready Python utilities built while working on AI agent systems and automation pipelines. **Pure Python — zero external dependencies.**
 
 ## Modules
 
@@ -28,11 +28,18 @@ A collection of practical, production-ready Python utilities built while working
 | `utils/crypto_utils.py` | HMAC-SHA256 signing, nonce generation |
 | `utils/validation_utils.py` | Guard clauses, symbol/email validation |
 
-## Quick Start
+## Install
+
+```bash
+pip install "git+https://github.com/GhravenLabs/python-utils-toolkit"
+```
+
+Or for local development:
 
 ```bash
 git clone https://github.com/GhravenLabs/python-utils-toolkit
 cd python-utils-toolkit
+pip install -e ".[dev]"
 python examples/retry_demo.py
 ```
 
@@ -43,26 +50,26 @@ python examples/retry_demo.py
 from utils.retry import retry
 
 @retry(max_attempts=3, base_delay=1.0, exceptions=(ConnectionError,))
-def fetch_price(symbol: str) -> float:
-    return api.get_price(symbol)
+def fetch_resource(resource_id: str) -> dict:
+    return api.get(resource_id)
 ```
 
-### Rate limiter (Binance API)
+### Rate limiter (API calls)
 ```python
 from utils.rate_limiter import RateLimiter
 
 limiter = RateLimiter(calls_per_second=5)
-for symbol in watchlist:
+for item in work_queue:
     limiter.acquire()
-    price = fetch_price(symbol)
+    result = api.process(item)
 ```
 
-### Sign exchange API request
+### Sign an API request (HMAC)
 ```python
 from utils.crypto_utils import hmac_sha256, timestamp_nonce
 
-params = f"symbol=BTCUSDT&side=BUY&timestamp={timestamp_nonce()}"
-signature = hmac_sha256(api_secret, params)
+payload = f"user=alice&action=export&timestamp={timestamp_nonce()}"
+signature = hmac_sha256(api_secret, payload)
 ```
 
 ### Cache API responses (avoid rate limits)
@@ -70,22 +77,22 @@ signature = hmac_sha256(api_secret, params)
 from utils.cache_utils import memoize
 
 @memoize(ttl=30)
-def get_ticker(symbol: str) -> dict:
-    return exchange.fetch_ticker(symbol)
+def get_status(service: str) -> dict:
+    return api.fetch_status(service)
 ```
 
-### Async retry for websocket streams
+### Async retry for streaming connections
 ```python
 from utils.async_utils import async_retry
 
 @async_retry(max_attempts=3, base_delay=0.5)
-async def fetch_orderbook(symbol: str) -> dict:
-    return await ws.get_orderbook(symbol)
+async def fetch_events(channel: str) -> dict:
+    return await ws.get_events(channel)
 ```
 
 ## Why
 
-Built for a live crypto futures trading bot (BTC/ETH/BNB/SOL on Binance) and multi-agent AI systems. When you're calling exchange APIs, running LLM chains, and processing live streams, you need reliable retry logic, rate limiting, and clean logging — without heavy frameworks.
+Built for multi-agent AI systems and automation pipelines. When you're calling external APIs, running LLM chains, and processing live streams, you need reliable retry logic, rate limiting, and clean logging — without heavy frameworks.
 
 ## Contributing
 
