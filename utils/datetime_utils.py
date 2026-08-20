@@ -1,4 +1,4 @@
-"""Date and time utilities for trading and automation.
+"""Date and time utilities for operations and automation.
 
 Usage
 -----

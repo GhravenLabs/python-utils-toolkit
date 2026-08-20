@@ -4,10 +4,11 @@ from utils.crypto_utils import hmac_sha256, sha256, md5, generate_nonce, timesta
 
 
 def test_hmac_sha256_known_value():
-    # Known reference: echo -n "symbol=BTCUSDT" | openssl dgst -sha256 -hmac "secret"
-    result = hmac_sha256("secret", "symbol=BTCUSDT")
+    # Known reference: echo -n "client=ACME42" | openssl dgst -sha256 -hmac "secret"
+    result = hmac_sha256("secret", "client=ACME42")
     assert isinstance(result, str)
     assert len(result) == 64  # hex-encoded SHA-256 is always 64 chars
+    assert result == "0000b930a1653351394e4a4edea00aeb530e4198fe634ebdd557b7d7d3dccb28"
 
 
 def test_hmac_sha256_deterministic():

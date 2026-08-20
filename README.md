@@ -19,14 +19,14 @@ A collection of practical, production-ready Python utilities built while working
 | `utils/logger.py` | Structured logging with colour + file rotation |
 | `utils/env.py` | Typed `.env` / environment variable loader |
 | `utils/string_utils.py` | slugify, truncate, camel_to_snake |
-| `utils/datetime_utils.py` | UTC helpers, humanize_delta, market hours |
+| `utils/datetime_utils.py` | UTC helpers, humanize_delta, business-hour helpers |
 | `utils/number_utils.py` | Currency format, tick rounding, pct_change |
 | `utils/list_utils.py` | chunk, flatten, deduplicate, batch_by |
 | `utils/dict_utils.py` | deep_merge, safe_get, flatten_dict |
 | `utils/cache_utils.py` | TTLCache + @memoize for API caching |
 | `utils/async_utils.py` | async retry, timeout, gather_safe |
 | `utils/crypto_utils.py` | HMAC-SHA256 signing, nonce generation |
-| `utils/validation_utils.py` | Guard clauses, symbol/email validation |
+| `utils/validation_utils.py` | Guard clauses, identifier/email validation |
 
 ## Install
 

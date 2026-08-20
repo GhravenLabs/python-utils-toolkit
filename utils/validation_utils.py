@@ -11,11 +11,11 @@ def is_positive_number(value: Any) -> bool:
 
 
 def is_valid_symbol(symbol: str) -> bool:
-    """Check if string looks like a valid trading symbol (e.g. BTCUSDT, BTC/USDT).
+    """Check if a compact uppercase identifier uses a safe symbol format.
 
-    >>> is_valid_symbol("BTCUSDT")
+    >>> is_valid_symbol("CLIENT42")
     True
-    >>> is_valid_symbol("BTC/USDT")
+    >>> is_valid_symbol("TEAM/API")
     True
     >>> is_valid_symbol("")
     False

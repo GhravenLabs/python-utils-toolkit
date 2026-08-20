@@ -1,4 +1,4 @@
-"""Hashing and HMAC utilities — useful for exchange API request signing."""
+"""Hashing and HMAC utilities for signed API requests."""
 
 from __future__ import annotations
 import hashlib
@@ -8,7 +8,7 @@ import time
 
 
 def hmac_sha256(secret: str, message: str) -> str:
-    """Generate HMAC-SHA256 signature (used by Binance, Bybit, etc.).
+    """Generate an HMAC-SHA256 signature.
 
     Args:
         secret: Your API secret key.
@@ -18,7 +18,7 @@ def hmac_sha256(secret: str, message: str) -> str:
         Hex-encoded HMAC-SHA256 signature.
 
     Example:
-        >>> sig = hmac_sha256("my_secret", "symbol=BTCUSDT&side=BUY")
+        >>> sig = hmac_sha256("my_secret", "client=ACME42&action=export")
     """
     return hmac.new(
         secret.encode("utf-8"),

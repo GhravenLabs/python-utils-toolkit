@@ -28,13 +28,13 @@ class TestIsPositiveNumber:
 
 class TestIsValidSymbol:
     def test_valid_no_slash(self):
-        assert is_valid_symbol("BTCUSDT") is True
+        assert is_valid_symbol("CLIENT42") is True
 
     def test_valid_with_slash(self):
-        assert is_valid_symbol("BTC/USDT") is True
+        assert is_valid_symbol("TEAM/API") is True
 
     def test_lowercase_normalised(self):
-        assert is_valid_symbol("btcusdt") is True
+        assert is_valid_symbol("client42") is True
 
     def test_empty_string(self):
         assert is_valid_symbol("") is False
