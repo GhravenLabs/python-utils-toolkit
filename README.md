@@ -8,6 +8,8 @@
 
 A collection of practical, production-ready Python utilities built while working on AI agent systems and automation pipelines. **Pure Python — zero external dependencies.**
 
+![Privacy redaction helper demo](assets/redaction-demo.png)
+
 ## Modules
 
 | Module | Description |
