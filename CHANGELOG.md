@@ -7,6 +7,7 @@ All notable changes to python-utils-toolkit are documented here.
 ### Added
 - GitHub Actions CI workflow running the full pytest suite on Ubuntu and Windows (Python 3.10–3.12); live CI badge replaces the static tests badge in README.
 - `pip install` instructions in README (installable straight from GitHub).
+- `utils/redaction_utils.py` for masking emails, phone numbers, API-style tokens, and secret mapping keys before logging support data or sending text to AI tools.
 
 ### Fixed
 - `pyproject.toml` build backend corrected from the invalid `setuptools.backends.legacy:build` to `setuptools.build_meta` — `pip install` of the package previously failed.

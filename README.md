@@ -26,6 +26,7 @@ A collection of practical, production-ready Python utilities built while working
 | `utils/cache_utils.py` | TTLCache + @memoize for API caching |
 | `utils/async_utils.py` | async retry, timeout, gather_safe |
 | `utils/crypto_utils.py` | HMAC-SHA256 signing, nonce generation |
+| `utils/redaction_utils.py` | Redact emails, phone numbers, tokens, and secret mapping keys before logging or sending text to AI |
 | `utils/validation_utils.py` | Guard clauses, identifier/email validation |
 
 ## Install
@@ -81,6 +82,14 @@ def get_status(service: str) -> dict:
     return api.fetch_status(service)
 ```
 
+### Redact sensitive text before logging or AI prompts
+```python
+from utils.redaction_utils import redact_mapping, redact_text
+
+safe_message = redact_text("Contact rolly@example.com with key sk-demo12345678")
+safe_payload = redact_mapping({"api_key": "sk-demo12345678", "note": safe_message})
+```
+
 ### Async retry for streaming connections
 ```python
 from utils.async_utils import async_retry
@@ -92,7 +101,7 @@ async def fetch_events(channel: str) -> dict:
 
 ## Why
 
-Built for multi-agent AI systems and automation pipelines. When you're calling external APIs, running LLM chains, and processing live streams, you need reliable retry logic, rate limiting, and clean logging — without heavy frameworks.
+Built for multi-agent AI systems and automation pipelines. When you're calling external APIs, running LLM chains, processing live streams, or preparing text for an AI model, you need reliable retry logic, rate limiting, privacy-safe redaction, and clean logging — without heavy frameworks.
 
 ## Contributing
 

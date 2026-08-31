@@ -20,6 +20,7 @@ from utils.list_utils import batch_by, chunk, deduplicate, first, flatten, last
 from utils.logger import get_logger
 from utils.number_utils import clamp, format_currency, pct_change, round_to_tick, safe_divide
 from utils.rate_limiter import RateLimiter, AsyncRateLimiter
+from utils.redaction_utils import mask_email, redact_mapping, redact_text
 from utils.retry import retry
 from utils.string_utils import camel_to_snake, indent, remove_prefix, remove_suffix, slugify, snake_to_camel, truncate
 from utils.timer import timer, Timer
@@ -67,6 +68,8 @@ __all__ = [
     "format_number", "round_to",
     # rate limiter
     "RateLimiter", "AsyncRateLimiter",
+    # redaction
+    "mask_email", "redact_mapping", "redact_text",
     # retry
     "retry",
     # string

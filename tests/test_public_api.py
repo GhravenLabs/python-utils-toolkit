@@ -11,6 +11,8 @@ def test_package_root_imports_public_helpers():
     assert utils.safe_read is utils.read_text
     assert utils.safe_write is utils.write_text
     assert utils.hmac_sign is utils.hmac_sha256
+    assert utils.redact_text
+    assert utils.redact_mapping
     assert utils.sha256_hex is utils.sha256
     assert utils.utc_now is utils.now_utc
     assert utils.dedup is utils.deduplicate
