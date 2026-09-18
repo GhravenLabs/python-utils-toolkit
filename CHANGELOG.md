@@ -10,6 +10,7 @@ All notable changes to python-utils-toolkit are documented here.
 - `utils/redaction_utils.py` for masking emails, phone numbers, API-style tokens, and secret mapping keys before logging support data or sending text to AI tools.
 
 ### Fixed
+- Cache membership and memoization now preserve cached `None` values, reused memoize decorators keep each function's results separate, and updating an existing cache key no longer evicts an unrelated entry.
 - `pyproject.toml` build backend corrected from the invalid `setuptools.backends.legacy:build` to `setuptools.build_meta` — `pip install` of the package previously failed.
 
 ### Changed

@@ -43,7 +43,7 @@ class TTLCache:
 
     def set(self, key: str, value: Any, ttl: float | None = None) -> None:
         with self._lock:
-            if len(self._store) >= self._maxsize:
+            if key not in self._store and len(self._store) >= self._maxsize:
                 # Evict oldest entry
                 oldest = min(self._store, key=lambda k: self._store[k][1])
                 del self._store[oldest]
@@ -59,7 +59,8 @@ class TTLCache:
             self._store.clear()
 
     def __contains__(self, key: str) -> bool:
-        return self.get(key) is not None
+        missing = object()
+        return self.get(key, missing) is not missing
 
 
 def memoize(ttl: float = 60.0):
@@ -69,14 +70,15 @@ def memoize(ttl: float = 60.0):
     ... def get_ticker_info(symbol: str) -> dict:
     ...     return api.get_ticker(symbol)  # only called once per 30s
     """
-    cache = TTLCache(ttl=ttl)
-
     def decorator(func: Callable) -> Callable:
+        cache = TTLCache(ttl=ttl)
+        missing = object()
+
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             key = str(args) + str(sorted(kwargs.items()))
-            result = cache.get(key)
-            if result is None:
+            result = cache.get(key, missing)
+            if result is missing:
                 result = func(*args, **kwargs)
                 cache.set(key, result)
             return result
