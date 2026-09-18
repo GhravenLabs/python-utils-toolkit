@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Keep console colors out of shared log records.
+
 ### Added
 - GitHub Actions CI workflow running the full pytest suite on Ubuntu and Windows (Python 3.10–3.12); live CI badge replaces the static tests badge in README.
 - `pip install` instructions in README (installable straight from GitHub).

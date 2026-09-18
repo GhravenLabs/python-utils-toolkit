@@ -9,6 +9,7 @@ Usage
 
 from __future__ import annotations
 
+import copy
 import logging
 import logging.handlers
 import sys
@@ -31,6 +32,7 @@ class _ColourFormatter(logging.Formatter):
     FMT = "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
 
     def format(self, record: logging.LogRecord) -> str:
+        record = copy.copy(record)
         colour = _COLOURS.get(record.levelname, _COLOURS["RESET"])
         reset = _COLOURS["RESET"]
         record.levelname = f"{colour}{record.levelname}{reset}"
