@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Reject ambiguous flattened dictionary keys.
+
 - Retain empty nested mappings when flattening.
 
 - Preserve line endings when indenting text.

@@ -45,9 +45,12 @@ def flatten_dict(d: dict, separator: str = ".", prefix: str = "") -> dict:
     for key, value in d.items():
         new_key = f"{prefix}{separator}{key}" if prefix else key
         if isinstance(value, dict) and value:
-            items.update(flatten_dict(value, separator, new_key))
+            additions = flatten_dict(value, separator, new_key)
         else:
-            items[new_key] = value
+            additions = {new_key: value}
+        if items.keys() & additions.keys():
+            raise ValueError("Flattened dictionary keys collide")
+        items.update(additions)
     return items
 
 
