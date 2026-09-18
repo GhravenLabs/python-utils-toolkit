@@ -36,7 +36,7 @@ def write_text(path: str | Path, content: str, encoding: str = "utf-8") -> None:
 def read_json(path: str | Path, default: Any = None) -> Any:
     """Read a JSON file, returning *default* if the file doesn't exist."""
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8-sig") as f:
             return json.load(f)
     except FileNotFoundError:
         return default
