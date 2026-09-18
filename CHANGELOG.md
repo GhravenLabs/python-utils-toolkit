@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Preserve existing json when serialization or replacement fails.
+
 - Accept utf-8 bom in dotenv configuration.
 
 - Support shell export prefixes in dotenv files.

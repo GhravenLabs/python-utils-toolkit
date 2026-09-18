@@ -45,11 +45,9 @@ def read_json(path: str | Path, default: Any = None) -> Any:
 
 
 def write_json(path: str | Path, data: Any, indent: int = 2) -> None:
-    """Write data as pretty-printed JSON, creating parent dirs as needed."""
-    p = Path(path)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    with open(p, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=indent, ensure_ascii=False)
+    """Serialize first, then atomically replace JSON; create parent directories."""
+    content = json.dumps(data, indent=indent, ensure_ascii=False)
+    atomic_write(path, content)
 
 
 def atomic_write(path: str | Path, content: str, encoding: str = "utf-8") -> None:
