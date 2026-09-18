@@ -37,7 +37,7 @@ class Env:
     def _load_dotenv(path: Path) -> None:
         if not path.exists():
             return
-        with path.open(encoding="utf-8") as fh:
+        with path.open(encoding="utf-8-sig") as fh:
             for line in fh:
                 line = line.strip()
                 if not line or line.startswith("#") or "=" not in line:
