@@ -24,6 +24,8 @@ def flatten(nested: Iterable[Any], depth: int = 1) -> list[Any]:
     >>> flatten([[1, 2], [3, [4, 5]]])
     [1, 2, 3, [4, 5]]
     """
+    if isinstance(depth, bool) or not isinstance(depth, int) or depth < 0:
+        raise ValueError("depth must be a nonnegative integer")
     result = []
     for item in nested:
         if isinstance(item, (list, tuple)) and depth > 0:

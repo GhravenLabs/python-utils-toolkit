@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Validate list flattening depth explicitly.
+
 - Reject ambiguous flattened dictionary keys.
 
 - Retain empty nested mappings when flattening.
