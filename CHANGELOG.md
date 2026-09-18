@@ -10,6 +10,13 @@ All notable changes to python-utils-toolkit are documented here.
 - `utils/redaction_utils.py` for masking emails, phone numbers, API-style tokens, and secret mapping keys before logging support data or sending text to AI tools.
 
 ### Fixed
+- TTL overrides now respect zero duration and expire at the deadline; invalid cache capacities raise `ValueError` at construction.
+- Sync/async rate limiters support fractional call rates with a usable default bucket and reject invalid configuration or impossible token requests instead of hanging.
+- Retry decorators validate attempt/delay bounds early; synchronous jitter never exceeds `max_delay`.
+- Date parsing preserves the instant of offset-aware input and returns UTC; negative durations render with a single leading minus sign.
+- Identifier validation rejects trailing newlines, and email validation returns false for non-string inputs.
+- Slug punctuation now separates words as documented; negative truncation lengths and nonpositive chunk sizes raise `ValueError`.
+- Nested dictionary lookup no longer mistakes an existing object for the caller's fallback value.
 - Cache membership and memoization now preserve cached `None` values, reused memoize decorators keep each function's results separate, and updating an existing cache key no longer evicts an unrelated entry.
 - `pyproject.toml` build backend corrected from the invalid `setuptools.backends.legacy:build` to `setuptools.build_meta` — `pip install` of the package previously failed.
 

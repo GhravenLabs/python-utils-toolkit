@@ -6,6 +6,7 @@ import functools
 import logging
 import random
 from typing import Any, Callable, Coroutine, TypeVar
+from .retry import _validate_retry
 
 logger = logging.getLogger(__name__)
 T = TypeVar("T")
@@ -45,6 +46,8 @@ def async_retry(
     ... async def fetch_price(symbol: str) -> float:
     ...     return await api.get_price(symbol)
     """
+    _validate_retry(max_attempts, base_delay, backoff)
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):

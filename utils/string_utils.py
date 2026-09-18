@@ -31,9 +31,7 @@ def slugify(text: str, separator: str = "-") -> str:
     text = text.encode("ascii", "ignore").decode("ascii")
     text = text.lower()
     # Replace non-alphanumeric characters with separator
-    text = re.sub(r"[^\w\s-]", "", text)
-    text = re.sub(r"[\s_-]+", separator, text)
-    return text.strip(separator)
+    return separator.join(re.findall(r"[a-z0-9]+", text))
 
 
 def truncate(text: str, max_length: int, suffix: str = "...") -> str:
@@ -44,6 +42,8 @@ def truncate(text: str, max_length: int, suffix: str = "...") -> str:
     >>> truncate("Hi", 10)
     'Hi'
     """
+    if isinstance(max_length, bool) or not isinstance(max_length, int) or max_length < 0:
+        raise ValueError("max_length must be a nonnegative integer")
     if len(text) <= max_length:
         return text
     cut = max_length - len(suffix)

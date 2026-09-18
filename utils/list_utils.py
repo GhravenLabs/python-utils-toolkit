@@ -12,6 +12,8 @@ def chunk(lst: list[T], size: int) -> Generator[list[T], None, None]:
     >>> list(chunk([1,2,3,4,5], 2))
     [[1, 2], [3, 4], [5]]
     """
+    if isinstance(size, bool) or not isinstance(size, int) or size < 1:
+        raise ValueError("size must be a positive integer")
     for i in range(0, len(lst), size):
         yield lst[i:i + size]
 

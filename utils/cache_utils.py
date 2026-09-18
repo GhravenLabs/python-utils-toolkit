@@ -15,7 +15,7 @@ class TTLCache:
 
     Args:
         ttl: Time-to-live in seconds (default 60).
-        maxsize: Maximum number of entries (oldest evicted first).
+        maxsize: Positive integer limit on entries (earliest expiry evicted first).
 
     Example:
         >>> cache = TTLCache(ttl=30)
@@ -25,6 +25,8 @@ class TTLCache:
     """
 
     def __init__(self, ttl: float = 60.0, maxsize: int = 1000) -> None:
+        if isinstance(maxsize, bool) or not isinstance(maxsize, int) or maxsize < 1:
+            raise ValueError("maxsize must be a positive integer")
         self._ttl = ttl
         self._maxsize = maxsize
         self._store: dict[str, tuple[Any, float]] = {}
@@ -36,18 +38,19 @@ class TTLCache:
             if entry is None:
                 return default
             value, expires_at = entry
-            if time.monotonic() > expires_at:
+            if time.monotonic() >= expires_at:
                 del self._store[key]
                 return default
             return value
 
     def set(self, key: str, value: Any, ttl: float | None = None) -> None:
+        """Store a value; None uses the default TTL and zero expires immediately."""
         with self._lock:
             if key not in self._store and len(self._store) >= self._maxsize:
                 # Evict oldest entry
                 oldest = min(self._store, key=lambda k: self._store[k][1])
                 del self._store[oldest]
-            expires_at = time.monotonic() + (ttl or self._ttl)
+            expires_at = time.monotonic() + (self._ttl if ttl is None else ttl)
             self._store[key] = (value, expires_at)
 
     def delete(self, key: str) -> None:

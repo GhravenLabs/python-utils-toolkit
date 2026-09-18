@@ -22,7 +22,7 @@ def is_valid_symbol(symbol: str) -> bool:
     """
     if not symbol or not isinstance(symbol, str):
         return False
-    return bool(re.match(r"^[A-Z0-9]{2,20}(/[A-Z0-9]{2,10})?$", symbol.upper()))
+    return bool(re.fullmatch(r"[A-Z0-9]{2,20}(/[A-Z0-9]{2,10})?", symbol.upper()))
 
 
 def is_valid_email(email: str) -> bool:
@@ -31,7 +31,7 @@ def is_valid_email(email: str) -> bool:
     >>> is_valid_email("user@example.com")
     True
     """
-    return bool(re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email))
+    return isinstance(email, str) and bool(re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email))
 
 
 def require(condition: bool, message: str) -> None:

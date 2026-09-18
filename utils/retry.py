@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import functools
 import logging
+import math
 import random
 import time
 from typing import Callable, Tuple, Type, TypeVar
@@ -18,6 +19,15 @@ from typing import Callable, Tuple, Type, TypeVar
 logger = logging.getLogger(__name__)
 
 F = TypeVar("F", bound=Callable)
+
+
+def _validate_retry(max_attempts: int, base_delay: float, backoff: float) -> None:
+    if isinstance(max_attempts, bool) or not isinstance(max_attempts, int) or max_attempts < 1:
+        raise ValueError("max_attempts must be a positive integer")
+    if not math.isfinite(base_delay) or base_delay < 0:
+        raise ValueError("base_delay must be finite and nonnegative")
+    if not math.isfinite(backoff) or backoff < 0:
+        raise ValueError("backoff must be finite and nonnegative")
 
 
 def retry(
@@ -58,6 +68,10 @@ def retry(
     ...     return requests.get(url).json()
     """
 
+    _validate_retry(max_attempts, base_delay, backoff)
+    if not math.isfinite(max_delay) or max_delay < 0:
+        raise ValueError("max_delay must be finite and nonnegative")
+
     def decorator(func: F) -> F:
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -81,6 +95,7 @@ def retry(
                     wait = min(delay, max_delay)
                     if jitter:
                         wait *= random.uniform(0.75, 1.25)
+                    wait = min(wait, max_delay)
                     logger.warning(
                         "%s attempt %d/%d failed (%s). Retrying in %.2fs…",
                         func.__name__,

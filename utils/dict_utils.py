@@ -29,11 +29,9 @@ def safe_get(d: dict, *keys: str, default: Any = None) -> Any:
     """
     current = d
     for key in keys:
-        if not isinstance(current, dict):
+        if not isinstance(current, dict) or key not in current:
             return default
-        current = current.get(key, default)
-        if current is default:
-            return default
+        current = current[key]
     return current
 
 

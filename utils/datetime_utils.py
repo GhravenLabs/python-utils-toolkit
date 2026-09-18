@@ -15,8 +15,9 @@ def now_utc() -> datetime:
 
 
 def parse_date(date_str: str, fmt: str = "%Y-%m-%d") -> datetime:
-    """Parse a date string into a datetime object."""
-    return datetime.strptime(date_str, fmt).replace(tzinfo=timezone.utc)
+    """Parse into UTC, assuming UTC only when the format supplies no offset."""
+    parsed = datetime.strptime(date_str, fmt)
+    return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed.astimezone(timezone.utc)
 
 
 def humanize_delta(seconds: float) -> str:
@@ -26,13 +27,15 @@ def humanize_delta(seconds: float) -> str:
     '1h 1m 1s'
     """
     seconds = int(seconds)
+    sign = "-" if seconds < 0 else ""
+    seconds = abs(seconds)
     h, remainder = divmod(seconds, 3600)
     m, s = divmod(remainder, 60)
     parts = []
     if h: parts.append(f"{h}h")
     if m: parts.append(f"{m}m")
     if s or not parts: parts.append(f"{s}s")
-    return " ".join(parts)
+    return sign + " ".join(parts)
 
 
 def timestamp_ms() -> int:
