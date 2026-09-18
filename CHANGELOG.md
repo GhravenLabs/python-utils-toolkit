@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Validate rounding increments and finite inputs.
+
 - Reject reversed clamp bounds.
 
 - Validate list flattening depth explicitly.

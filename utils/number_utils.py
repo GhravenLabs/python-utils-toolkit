@@ -21,6 +21,8 @@ def round_to_tick(price: float, tick_size: float) -> float:
     """
     tick = Decimal(str(tick_size))
     price_d = Decimal(str(price))
+    if not tick.is_finite() or tick <= 0 or not price_d.is_finite():
+        raise ValueError("price must be finite and tick_size finite and positive")
     return float((price_d / tick).quantize(Decimal("1"), rounding=ROUND_HALF_UP) * tick)
 
 
