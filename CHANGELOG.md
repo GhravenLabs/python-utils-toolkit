@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Time awaited execution of async decorated functions.
+
 - Validate currency display precision.
 
 - Validate rounding increments and finite inputs.

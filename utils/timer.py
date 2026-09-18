@@ -14,6 +14,7 @@ Usage
 from __future__ import annotations
 
 import functools
+import inspect
 import logging
 import time
 from typing import Callable, TypeVar
@@ -32,6 +33,17 @@ def timer(func: F) -> F:
     ... def analyze_market(symbol: str) -> dict:
     ...     ...
     """
+
+    if inspect.iscoroutinefunction(func):
+        @functools.wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            start = time.perf_counter()
+            try:
+                return await func(*args, **kwargs)
+            finally:
+                elapsed = time.perf_counter() - start
+                logger.info("%s completed in %.4fs", func.__name__, elapsed)
+        return async_wrapper  # type: ignore[return-value]
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
