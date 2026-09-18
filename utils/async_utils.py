@@ -25,12 +25,12 @@ async def with_timeout(coro: Coroutine, seconds: float, default: Any = None) -> 
 
 
 async def gather_safe(*coros: Coroutine) -> list[Any]:
-    """Like asyncio.gather but returns None for failed coroutines instead of raising.
+    """Return None for failed/cancelled children; parent cancellation propagates.
 
     >>> results = await gather_safe(fetch_a(), fetch_b(), fetch_c())
     """
     results = await asyncio.gather(*coros, return_exceptions=True)
-    return [None if isinstance(r, Exception) else r for r in results]
+    return [None if isinstance(r, (Exception, asyncio.CancelledError)) else r for r in results]
 
 
 def async_retry(

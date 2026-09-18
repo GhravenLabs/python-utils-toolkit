@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Normalize cancelled child results in safe gathering.
+
 - Reset elapsed time when reusing a timer context.
 
 - Time awaited execution of async decorated functions.
