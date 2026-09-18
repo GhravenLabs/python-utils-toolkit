@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Preserve line endings when indenting text.
+
 - Read utf-8 bom json exports.
 
 - Preserve existing json when serialization or replacement fails.

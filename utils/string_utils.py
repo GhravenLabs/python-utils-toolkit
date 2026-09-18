@@ -77,7 +77,7 @@ def snake_to_camel(name: str) -> str:
 def indent(text: str, spaces: int = 4) -> str:
     """Indent every line of *text* by *spaces* spaces."""
     prefix = " " * spaces
-    return "\n".join(prefix + line for line in text.splitlines())
+    return "".join(prefix + line for line in text.splitlines(keepends=True))
 
 
 def remove_prefix(text: str, prefix: str) -> str:
