@@ -80,6 +80,7 @@ class Timer:
         self._start: float = 0.0
 
     def __enter__(self) -> "Timer":
+        self.elapsed = 0.0
         self._start = time.perf_counter()
         return self
 

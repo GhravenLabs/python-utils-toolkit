@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Reset elapsed time when reusing a timer context.
+
 - Time awaited execution of async decorated functions.
 
 - Validate currency display precision.
