@@ -44,7 +44,7 @@ def flatten_dict(d: dict, separator: str = ".", prefix: str = "") -> dict:
     items = {}
     for key, value in d.items():
         new_key = f"{prefix}{separator}{key}" if prefix else key
-        if isinstance(value, dict):
+        if isinstance(value, dict) and value:
             items.update(flatten_dict(value, separator, new_key))
         else:
             items[new_key] = value

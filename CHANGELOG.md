@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Retain empty nested mappings when flattening.
+
 - Preserve line endings when indenting text.
 
 - Read utf-8 bom json exports.
