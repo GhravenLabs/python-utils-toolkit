@@ -44,6 +44,8 @@ class Env:
                     continue
                 key, _, value = line.partition("=")
                 key = key.strip()
+                if key.startswith(("export ", "export\t")):
+                    key = key[6:].strip()
                 if not key:
                     continue
                 value = value.strip()

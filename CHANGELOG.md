@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Support shell export prefixes in dotenv files.
+
 - Skip empty dotenv keys without aborting configuration.
 
 - Preserve literal quotes in dotenv values.
