@@ -41,6 +41,8 @@ def clamp(value: float, min_val: float, max_val: float) -> float:
     >>> clamp(15, 0, 10)
     10
     """
+    if min_val > max_val:
+        raise ValueError("min_val must not exceed max_val")
     return max(min_val, min(max_val, value))
 
 
