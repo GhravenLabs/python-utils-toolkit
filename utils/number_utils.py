@@ -10,6 +10,8 @@ def format_currency(amount: float, symbol: str = "$", decimals: int = 2) -> str:
     >>> format_currency(1234567.89)
     '$1,234,567.89'
     """
+    if isinstance(decimals, bool) or not isinstance(decimals, int) or decimals < 0:
+        raise ValueError("decimals must be a nonnegative integer")
     return f"{symbol}{amount:,.{decimals}f}"
 
 
