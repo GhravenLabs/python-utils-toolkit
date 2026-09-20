@@ -46,7 +46,7 @@ def redact_mapping(
     replacement: str = "[REDACTED]",
 ) -> dict[str, Any]:
     """Return a copy of a mapping with sensitive keys and string values redacted."""
-    blocked = {key.lower() for key in (secret_keys or DEFAULT_SECRET_KEYS)}
+    blocked = {key.lower() for key in (DEFAULT_SECRET_KEYS if secret_keys is None else secret_keys)}
     clean: dict[str, Any] = {}
     for key, value in data.items():
         key_lower = str(key).lower()
