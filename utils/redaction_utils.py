@@ -47,7 +47,7 @@ def redact_mapping(
 ) -> dict[str, Any]:
     """Return a copy of a mapping with sensitive keys and string values redacted."""
     def normalize(key):
-        return re.sub(r"[^a-z0-9]", "", str(key).lower())
+        return re.sub(r"[\W_]", "", str(key).lower())
 
     blocked = {normalize(key) for key in (DEFAULT_SECRET_KEYS if secret_keys is None else secret_keys)}
     blocked.discard("")
