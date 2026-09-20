@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 import functools
+import math
 import time
 from threading import Lock
 from typing import Any, Callable
@@ -14,7 +15,7 @@ class TTLCache:
     hitting rate limits on every call.
 
     Args:
-        ttl: Time-to-live in seconds (default 60).
+        ttl: Finite time-to-live in seconds (default 60).
         maxsize: Positive integer limit on entries (earliest expiry evicted first).
 
     Example:
@@ -27,6 +28,8 @@ class TTLCache:
     def __init__(self, ttl: float = 60.0, maxsize: int = 1000) -> None:
         if isinstance(maxsize, bool) or not isinstance(maxsize, int) or maxsize < 1:
             raise ValueError("maxsize must be a positive integer")
+        if not math.isfinite(ttl):
+            raise ValueError("ttl must be finite")
         self._ttl = ttl
         self._maxsize = maxsize
         self._store: dict[str, tuple[Any, float]] = {}
@@ -45,12 +48,15 @@ class TTLCache:
 
     def set(self, key: str, value: Any, ttl: float | None = None) -> None:
         """Store a value; None uses the default TTL and zero expires immediately."""
+        effective_ttl = self._ttl if ttl is None else ttl
+        if not math.isfinite(effective_ttl):
+            raise ValueError("ttl must be finite")
         with self._lock:
             if key not in self._store and len(self._store) >= self._maxsize:
                 # Evict oldest entry
                 oldest = min(self._store, key=lambda k: self._store[k][1])
                 del self._store[oldest]
-            expires_at = time.monotonic() + (self._ttl if ttl is None else ttl)
+            expires_at = time.monotonic() + effective_ttl
             self._store[key] = (value, expires_at)
 
     def delete(self, key: str) -> None:
