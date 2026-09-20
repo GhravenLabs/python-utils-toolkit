@@ -35,7 +35,7 @@ def mask_email(value: str) -> str:
 
 def redact_text(text: str, replacement: str = "[REDACTED]") -> str:
     """Redact common personal data and API tokens from a string."""
-    redacted = TOKEN_RE.sub(replacement, text)
+    redacted = TOKEN_RE.sub(lambda match: replacement, text)
     redacted = EMAIL_RE.sub(lambda match: mask_email(match.group(0)), redacted)
     return PHONE_RE.sub("[REDACTED_PHONE]", redacted)
 
