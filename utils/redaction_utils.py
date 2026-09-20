@@ -47,24 +47,20 @@ def redact_mapping(
 ) -> dict[str, Any]:
     """Return a copy of a mapping with sensitive keys and string values redacted."""
     blocked = {key.lower() for key in (DEFAULT_SECRET_KEYS if secret_keys is None else secret_keys)}
+    def clean_value(value):
+        if isinstance(value, str):
+            return redact_text(value, replacement=replacement)
+        if isinstance(value, Mapping):
+            return redact_mapping(value, secret_keys=blocked, replacement=replacement)
+        if isinstance(value, (list, tuple)):
+            return type(value)(clean_value(item) for item in value)
+        return value
+
     clean: dict[str, Any] = {}
     for key, value in data.items():
         key_lower = str(key).lower()
         if key_lower in blocked or any(part in key_lower for part in blocked):
             clean[key] = replacement
-        elif isinstance(value, str):
-            clean[key] = redact_text(value, replacement=replacement)
-        elif isinstance(value, Mapping):
-            clean[key] = redact_mapping(value, secret_keys=blocked, replacement=replacement)
-        elif isinstance(value, list):
-            clean[key] = [
-                redact_mapping(item, secret_keys=blocked, replacement=replacement)
-                if isinstance(item, Mapping)
-                else redact_text(item, replacement=replacement)
-                if isinstance(item, str)
-                else item
-                for item in value
-            ]
         else:
-            clean[key] = value
+            clean[key] = clean_value(value)
     return clean
