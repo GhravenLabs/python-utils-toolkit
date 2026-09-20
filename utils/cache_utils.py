@@ -5,7 +5,7 @@ import functools
 import math
 import time
 from threading import Lock
-from typing import Any, Callable
+from typing import Any, Callable, Hashable
 
 
 class TTLCache:
@@ -32,7 +32,7 @@ class TTLCache:
             raise ValueError("ttl must be finite")
         self._ttl = ttl
         self._maxsize = maxsize
-        self._store: dict[str, tuple[Any, float]] = {}
+        self._store: dict[Hashable, tuple[Any, float]] = {}
         self._lock = Lock()
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -73,7 +73,7 @@ class TTLCache:
 
 
 def memoize(ttl: float = 60.0):
-    """Decorator that caches function results with TTL.
+    """Cache results for hashable arguments with TTL; bypass unhashable inputs.
 
     >>> @memoize(ttl=30)
     ... def get_ticker_info(symbol: str) -> dict:
@@ -85,7 +85,13 @@ def memoize(ttl: float = 60.0):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            key = str(args) + str(sorted(kwargs.items()))
+            key = (tuple((type(arg), arg) for arg in args),
+                   tuple((name, type(value), value) for name, value in sorted(kwargs.items())))
+            try:
+                hash(key)
+            except TypeError:
+                # Mutable/unhashable inputs cannot safely identify cached results.
+                return func(*args, **kwargs)
             result = cache.get(key, missing)
             if result is missing:
                 result = func(*args, **kwargs)
