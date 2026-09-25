@@ -75,6 +75,9 @@ class TTLCache:
 def memoize(ttl: float = 60.0):
     """Cache results for hashable arguments with TTL; bypass unhashable inputs.
 
+    Keyword argument order is preserved: functions accepting **kwargs can
+    observe it, so differently ordered calls use separate cache entries.
+
     >>> @memoize(ttl=30)
     ... def get_ticker_info(symbol: str) -> dict:
     ...     return api.get_ticker(symbol)  # only called once per 30s
@@ -86,7 +89,7 @@ def memoize(ttl: float = 60.0):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             key = (tuple((type(arg), arg) for arg in args),
-                   tuple((name, type(value), value) for name, value in sorted(kwargs.items())))
+                   tuple((name, type(value), value) for name, value in kwargs.items()))
             try:
                 hash(key)
             except TypeError:

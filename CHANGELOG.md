@@ -4,6 +4,8 @@ All notable changes to python-utils-toolkit are documented here.
 
 ## [Unreleased]
 
+- Preserve keyword argument order in memoized calls to avoid returning a result for a differently ordered input.
+
 - Normalize cancelled child results in safe gathering.
 
 - Reset elapsed time when reusing a timer context.
