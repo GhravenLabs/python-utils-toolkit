@@ -47,11 +47,14 @@ class TTLCache:
             return value
 
     def set(self, key: str, value: Any, ttl: float | None = None) -> None:
-        """Store a value; None uses the default TTL and zero expires immediately."""
+        """Store a value; nonpositive TTL removes only this key without eviction."""
         effective_ttl = self._ttl if ttl is None else ttl
         if not math.isfinite(effective_ttl):
             raise ValueError("ttl must be finite")
         with self._lock:
+            if effective_ttl <= 0:
+                self._store.pop(key, None)
+                return
             if key not in self._store and len(self._store) >= self._maxsize:
                 # Evict oldest entry
                 oldest = min(self._store, key=lambda k: self._store[k][1])
