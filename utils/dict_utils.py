@@ -41,17 +41,21 @@ def flatten_dict(d: dict, separator: str = ".", prefix: str = "") -> dict:
     >>> flatten_dict({"a": {"b": 1, "c": 2}})
     {'a.b': 1, 'a.c': 2}
     """
-    items = {}
-    for key, value in d.items():
-        new_key = f"{prefix}{separator}{key}" if prefix else key
-        if isinstance(value, dict) and value:
-            additions = flatten_dict(value, separator, new_key)
-        else:
-            additions = {new_key: value}
-        if items.keys() & additions.keys():
-            raise ValueError("Flattened dictionary keys collide")
-        items.update(additions)
-    return items
+    def walk(mapping, parent):
+        items = {}
+        for key, value in mapping.items():
+            # None means the root; an empty string is a real parent key.
+            new_key = f"{parent}{separator}{key}" if parent is not None else key
+            if isinstance(value, dict) and value:
+                additions = walk(value, new_key)
+            else:
+                additions = {new_key: value}
+            if items.keys() & additions.keys():
+                raise ValueError("Flattened dictionary keys collide")
+            items.update(additions)
+        return items
+
+    return walk(d, prefix if prefix else None)
 
 
 def pick(d: dict, *keys: str) -> dict:
