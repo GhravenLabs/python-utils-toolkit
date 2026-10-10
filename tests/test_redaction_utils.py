@@ -1,6 +1,20 @@
 from utils.redaction_utils import mask_email, redact_mapping, redact_text
 
 
+def test_fine_grained_github_token_in_text_and_nested_message():
+    # Synthetic fixture; never a real credential.
+    token = 'github_pat_' + 'EXAMPLE_' * 10
+    text = f'Bearer {token}; request failed'
+    assert redact_text(text) == 'Bearer [REDACTED]; request failed'
+    assert redact_mapping({'events': [text]}, replacement='<hidden>') == {
+        'events': ['Bearer <hidden>; request failed']
+    }
+
+
+def test_github_token_prefix_alone_is_not_redacted():
+    assert redact_text('Fine-grained prefix: github_pat_') == 'Fine-grained prefix: github_pat_'
+
+
 def test_mask_email_keeps_debuggable_shape():
     assert mask_email("rolly@example.com") == "r***y@example.com"
     assert mask_email("a@example.com") == "a***@example.com"
