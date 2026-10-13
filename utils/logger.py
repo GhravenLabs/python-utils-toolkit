@@ -75,7 +75,6 @@ def get_logger(
     # Console handler with colour
     console = logging.StreamHandler(sys.stdout)
     console.setFormatter(_ColourFormatter(_ColourFormatter.FMT))
-    log.addHandler(console)
 
     # Rotating file handler
     if log_file is not None:
@@ -89,4 +88,7 @@ def get_logger(
         )
         log.addHandler(file_handler)
 
+    # Publish console configuration only after file setup succeeds, so callers
+    # can retry a failed setup without inheriting a partially configured logger.
+    log.addHandler(console)
     return log
