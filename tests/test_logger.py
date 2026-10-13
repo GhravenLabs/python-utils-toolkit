@@ -4,6 +4,26 @@ import pytest
 from utils.logger import get_logger
 
 
+@pytest.mark.parametrize("terminal, override, expected", [
+    (False, None, False), (True, None, True),
+    (False, True, True), (True, False, False),
+])
+def test_console_colour_respects_destination(monkeypatch, terminal, override, expected):
+    import io
+    stream = io.StringIO()
+    monkeypatch.setattr(stream, "isatty", lambda: terminal)
+    monkeypatch.setattr("sys.stdout", stream)
+    name = f"test.colour.{terminal}.{override}"
+    log = get_logger(name, colour=override)
+    try:
+        log.info("readable output")
+        assert ("\x1b[" in stream.getvalue()) is expected
+    finally:
+        for handler in log.handlers[:]:
+            handler.close()
+            log.removeHandler(handler)
+
+
 def test_get_logger_returns_logger():
     log = get_logger("test.basic")
     assert isinstance(log, logging.Logger)

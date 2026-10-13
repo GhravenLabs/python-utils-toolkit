@@ -45,6 +45,8 @@ def get_logger(
     log_file: str | Path | None = None,
     max_bytes: int = 10 * 1024 * 1024,
     backup_count: int = 3,
+    *,
+    colour: bool | None = None,
 ) -> logging.Logger:
     """Create or retrieve a logger with console + optional rotating file handler.
 
@@ -60,6 +62,9 @@ def get_logger(
         Maximum size of a single log file before rotation (default 10 MB).
     backup_count:
         Number of rotated files to keep.
+    colour:
+        Enable ANSI console colours. By default, enable only for a terminal;
+        redirected output stays plain. File logs are always plain.
 
     Returns
     -------
@@ -74,7 +79,9 @@ def get_logger(
 
     # Console handler with colour
     console = logging.StreamHandler(sys.stdout)
-    console.setFormatter(_ColourFormatter(_ColourFormatter.FMT))
+    use_colour = sys.stdout.isatty() if colour is None else colour
+    formatter = _ColourFormatter if use_colour else logging.Formatter
+    console.setFormatter(formatter(_ColourFormatter.FMT))
 
     # Rotating file handler
     if log_file is not None:
