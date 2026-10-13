@@ -5,6 +5,31 @@ from utils.async_utils import with_timeout, gather_safe, async_retry, run_sequen
 
 
 @pytest.mark.asyncio
+async def test_async_retry_caps_backoff_and_jitter(monkeypatch):
+    waits = []
+
+    async def sleep(seconds):
+        waits.append(seconds)
+
+    monkeypatch.setattr(asyncio, "sleep", sleep)
+    monkeypatch.setattr("utils.async_utils.random.uniform", lambda *_: 1.25)
+
+    @async_retry(max_attempts=4, base_delay=10, backoff=10, max_delay=2)
+    async def fail():
+        raise ConnectionError("offline")
+
+    with pytest.raises(ConnectionError):
+        await fail()
+    assert waits == [2, 2, 2]
+
+
+@pytest.mark.parametrize("delay", [-1, float("inf"), float("nan")])
+def test_async_retry_rejects_invalid_max_delay(delay):
+    with pytest.raises(ValueError, match="max_delay"):
+        async_retry(max_delay=delay)
+
+
+@pytest.mark.asyncio
 async def test_with_timeout_completes():
     async def fast():
         return 42

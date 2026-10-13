@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import functools
 import logging
+import math
 import random
 from typing import Any, Callable, Coroutine, TypeVar
 from .retry import _validate_retry
@@ -39,14 +40,18 @@ def async_retry(
     backoff: float = 2.0,
     jitter: bool = True,
     exceptions: tuple = (Exception,),
+    *,
+    max_delay: float = 60.0,
 ):
-    """Async version of the retry decorator with exponential backoff.
+    """Async retry with exponential backoff capped at ``max_delay`` seconds.
 
     >>> @async_retry(max_attempts=3, base_delay=0.5)
     ... async def fetch_price(symbol: str) -> float:
     ...     return await api.get_price(symbol)
     """
     _validate_retry(max_attempts, base_delay, backoff)
+    if not math.isfinite(max_delay) or max_delay < 0:
+        raise ValueError("max_delay must be finite and nonnegative")
 
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
@@ -60,7 +65,8 @@ def async_retry(
                     last_exc = exc
                     if attempt == max_attempts:
                         raise
-                    wait = delay * (random.uniform(0.75, 1.25) if jitter else 1.0)
+                    wait = min(delay, max_delay) * (random.uniform(0.75, 1.25) if jitter else 1.0)
+                    wait = min(wait, max_delay)
                     logger.warning("%s attempt %d/%d failed. Retrying in %.2fs",
                                    func.__name__, attempt, max_attempts, wait)
                     await asyncio.sleep(wait)
