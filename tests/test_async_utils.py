@@ -79,3 +79,20 @@ async def test_run_sequential():
         return x
     results = await run_sequential([fn(1), fn(2), fn(3)])
     assert results == [1, 2, 3]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("error", [ValueError, asyncio.CancelledError])
+async def test_run_sequential_closes_unstarted_coroutines(error):
+    import inspect
+
+    async def fail():
+        raise error()
+
+    async def pending():
+        pytest.fail("later steps must not execute")
+
+    later = pending()
+    with pytest.raises(error):
+        await run_sequential([fail(), later])
+    assert inspect.getcoroutinestate(later) == inspect.CORO_CLOSED

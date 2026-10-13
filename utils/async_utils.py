@@ -71,5 +71,13 @@ def async_retry(
 
 
 async def run_sequential(coros: list[Coroutine]) -> list[Any]:
-    """Run coroutines one by one and return all results."""
-    return [await coro for coro in coros]
+    """Run in order, closing unstarted coroutines if a step fails or is cancelled."""
+    results = []
+    for index, coro in enumerate(coros):
+        try:
+            results.append(await coro)
+        except BaseException:
+            for pending in coros[index + 1:]:
+                pending.close()
+            raise
+    return results
