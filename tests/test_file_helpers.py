@@ -55,6 +55,17 @@ def test_atomic_write(tmp):
     assert p.read_text(encoding="utf-8") == "safe content"
 
 
+def test_atomic_write_flushes_content_before_replace(tmp, monkeypatch):
+    events = []
+    real_replace = os.replace
+    monkeypatch.setattr(os, "fsync", lambda fd: events.append("fsync"))
+    monkeypatch.setattr(os, "replace", lambda source, target: (
+        events.append("replace"), real_replace(source, target)
+    )[-1])
+    atomic_write(tmp / "durable.txt", "complete")
+    assert events == ["fsync", "replace"]
+
+
 def test_atomic_write_no_temp_file_left(tmp):
     p = tmp / "out.txt"
     atomic_write(p, "data")
