@@ -32,6 +32,12 @@ class TestFlatten:
 
 
 class TestDeduplicate:
+    def test_preserves_order_for_unhashable_values(self):
+        first = {"name": "Acme"}
+        assert deduplicate([first, [1, 2], {"name": "Acme"}, [1, 2], [2, 1]]) == [
+            first, [1, 2], [2, 1]
+        ]
+
     def test_removes_dupes(self):
         assert deduplicate([1, 2, 1, 3, 2]) == [1, 2, 3]
 

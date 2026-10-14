@@ -36,14 +36,24 @@ def flatten(nested: Iterable[Any], depth: int = 1) -> list[Any]:
 
 
 def deduplicate(lst: list[T], preserve_order: bool = True) -> list[T]:
-    """Remove duplicates from list.
+    """Remove equal duplicates, including unhashable lists and dictionaries.
 
     >>> deduplicate([1, 2, 1, 3, 2])
     [1, 2, 3]
     """
     if preserve_order:
-        seen: set = set()
-        return [x for x in lst if not (x in seen or seen.add(x))]  # type: ignore
+        result: list[T] = []
+        seen_hashable: set = set()
+        for item in lst:
+            try:
+                if item in seen_hashable:
+                    continue
+                seen_hashable.add(item)
+            except TypeError:
+                if any(item == previous for previous in result):
+                    continue
+            result.append(item)
+        return result
     return list(set(lst))
 
 
