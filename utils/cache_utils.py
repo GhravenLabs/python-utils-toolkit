@@ -70,6 +70,15 @@ class TTLCache:
         with self._lock:
             self._store.clear()
 
+    def __len__(self) -> int:
+        """Return the number of live entries, pruning expired values first."""
+        now = time.monotonic()
+        with self._lock:
+            expired = [key for key, (_, expiry) in self._store.items() if now >= expiry]
+            for key in expired:
+                del self._store[key]
+            return len(self._store)
+
     def __contains__(self, key: str) -> bool:
         missing = object()
         return self.get(key, missing) is not missing
@@ -103,5 +112,6 @@ def memoize(ttl: float = 60.0):
                 result = func(*args, **kwargs)
                 cache.set(key, result)
             return result
+        wrapper.cache_clear = cache.clear
         return wrapper
     return decorator

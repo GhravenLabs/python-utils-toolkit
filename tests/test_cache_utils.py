@@ -5,6 +5,14 @@ from utils.cache_utils import TTLCache, memoize
 
 
 class TestTTLCache:
+    def test_len_counts_only_live_entries(self):
+        cache = TTLCache()
+        cache.set("live", 1, ttl=10)
+        cache.set("expired", 2, ttl=0.01)
+        time.sleep(0.02)
+        assert len(cache) == 1
+        assert cache.get("expired") is None
+
     def test_none_is_a_present_cached_value(self):
         cache = TTLCache()
         cache.set("empty", None)
@@ -73,6 +81,18 @@ class TestTTLCache:
 
 
 class TestMemoize:
+    def test_cache_clear_forces_recalculation(self):
+        calls = []
+
+        @memoize()
+        def value():
+            calls.append(True)
+            return len(calls)
+
+        assert value() == value() == 1
+        value.cache_clear()
+        assert value() == 2
+
     def test_none_result_is_cached(self):
         calls = []
 
